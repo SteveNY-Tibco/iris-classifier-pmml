@@ -1,0 +1,90 @@
+{
+	"DeploymentGpID" : "model-ops-jpmml-pipeline",
+	"DataFlow" : [{
+			"Upstream" : "s-0",
+			"Downstream" : "jpmml-iris-classifier01"
+		}, {
+			"Upstream" : "jpmml-iris-classifier01",
+			"Downstream" : "d-0"
+		}
+	],
+    "Components":[
+        {
+            "Type":"Source",
+            "Runtime":"flogo",
+            "Name":"s-0",
+			"Replicas": 1,
+			"DockerImage" : "bigoyang/pipeline-datasource:0.2.0",
+			"Volumes" : [
+				{
+					"Name" : "input",
+					"MountPoint" : "/usr/local/Data"
+				}
+			],
+            "Properties":[
+            	{
+                	"Name":".descriptor",
+                	"Value":"A"
+                }
+            ]
+        },
+        {
+            "Type":"JPMMLModel",
+            "Runtime":"java",
+            "Name":"jpmml-iris-classifier01",
+			"Replicas": 1,
+			"DockerImage" : "bigoyang/jpmml-runner:0.2.2",
+			"Volumes" : [
+				{
+					"Name" : "artifacts",
+					"MountPoint" : "/app/artifacts"
+				}
+			],
+            "Properties":[
+            	{
+                	"Name":"JPMMLModel_URI",
+                	"Value":"./artifacts/iris_rf.pmml"
+                },
+                {
+                	"Name":"JPMMLModel_plugin",
+                	"Value":"com.tibco.modelops.models.PmmlIris"
+                }
+            ]
+        },
+        {
+            "Type":"Destination",
+            "Runtime":"flogo",
+            "Name":"d-0",
+			"Replicas": 1,
+			"DockerImage" : "bigoyang/pipeline-datadesination:0.2.0",
+			"Volumes" : [
+				{
+					"Name" : "output",
+					"MountPoint" : "/usr/local/Output"
+				}
+			],
+            "Properties":[
+                {
+                	"Name":".descriptor",
+                	"Value":"C"
+                }
+            ]
+        }
+    ],
+    "System" : {
+    	"Volume" : [
+    		{
+    			"Name" : "input",
+    			"Value" : "{{temp.project.home}}/input"
+    		},	
+    		{
+    			"Name" : "artifacts",
+    			"Value" : "{{temp.project.home}}/artifacts"
+    		},	
+    		{
+    			"Name" : "output",
+    			"Value" : "{{temp.project.home}}/output"
+    		}	
+    	]
+    }
+}

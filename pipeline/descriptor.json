@@ -23,8 +23,12 @@
 			],
             "Properties":[
             	{
-                	"Name":".descriptor",
-                	"Value":"A"
+                	"Name":"System.ID",
+                	"Value":"$ID$"
+                },
+                {
+                	"Name":"System.ServiceLocator",
+                	"Value":"$ServiceLocator$"
                 }
             ]
         },
